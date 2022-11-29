@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  shipping_api:
+    container_name: shipping_api
+    build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "5000:5000"
+    links:
+      - shipping_db
+    environment:
+      - PORT=5000
+      - NODE_ENV=dev
+      - DB_SERVICE_NAME=shipping_db
+      - DB_NAME=shipping
+      - DB_USER=admin
+      - DB_PWD=admin
+    command: /tini -- node_modules/.bin/ts-node-dev --project=tsconfig.json --transpile-only --respawn src/server.ts
+  shipping_db:
+    container_name: shipping_db
+    image: postgres:latest
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=shipping
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5432:5432"

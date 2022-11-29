@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+.jest-cache/
+coverage/
+node_modules/
+build/
+tmp/
+temp/
+data/
