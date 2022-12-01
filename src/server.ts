@@ -30,6 +30,7 @@ function createSwagger(app: INestApplication) {
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(ApplicationModule, {
         logger: console,
+        cors: true,
     });
 
     app.setGlobalPrefix(process.env.API_PREFIX || API_DEFAULT_PREFIX);

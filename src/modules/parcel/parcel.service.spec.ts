@@ -23,6 +23,7 @@ describe("parcel.service", () => {
                         addOrderBy: jest.fn().mockReturnThis(),
                         limit: jest.fn().mockReturnThis(),
                         andWhere: jest.fn().mockReturnThis(),
+                        offset: jest.fn().mockReturnThis(),
                         getRawMany: jest.fn().mockResolvedValue([
                             {
                                 id: 5,
@@ -64,7 +65,8 @@ describe("parcel.service", () => {
                     },
                 ],
                 hasMoreItems: false,
-                lastId: 5,
+                first: 50,
+                after: 0,
             });
         });
     });

@@ -8,7 +8,8 @@ type ParcelReturnValue = Omit<Parcel, "country"> & { country: string };
 type GetListReturnValue = {
     parcels: ParcelReturnValue[];
     hasMoreItems: boolean;
-    lastId: number;
+    first: number;
+    after: number;
 };
 @Injectable()
 export class ParcelService {
@@ -28,6 +29,9 @@ export class ParcelService {
         term?: string;
         countryName?: string;
     }): Promise<GetListReturnValue> {
+        first = parseInt(String(first), 10);
+        after = parseInt(String(after), 10);
+
         const query = this.parcelsRepository
             .createQueryBuilder("parcel")
             .select(
@@ -41,13 +45,13 @@ export class ParcelService {
                 "cntr"."name" as "country"
             `
             )
-            .where("parcel.id >= :after", { after })
             .leftJoin("parcel.country", "cntr")
             .orderBy(
                 `(case when "cntr"."name" = 'Estonia' then 1 else 2 end)`,
                 "ASC"
             )
             .addOrderBy(`"parcel"."deliveryDate"`, "ASC")
+            .offset(after)
             .limit(first + 1);
 
         if (term) {
@@ -66,7 +70,8 @@ export class ParcelService {
         return {
             parcels: matchedParcels.slice(0, first),
             hasMoreItems: matchedParcels.length > first,
-            lastId: matchedParcels.at(-1)?.id ?? 0,
+            first,
+            after,
         };
     }
 

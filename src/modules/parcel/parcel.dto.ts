@@ -35,8 +35,11 @@ export class PaginatedDto<T> {
     @ApiProperty({ description: "has more items matching the criteria" })
     hasMoreItems: boolean;
 
-    @ApiProperty({ description: "item id to do subsequent request with" })
-    lastId: number;
+    @ApiProperty({ description: "how many items were returned" })
+    first: number;
+
+    @ApiProperty({ description: "offset" })
+    after: number;
 
     parcels: T[];
 }

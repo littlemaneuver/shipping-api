@@ -20,7 +20,8 @@ describe("parcel.controller", () => {
             },
         ],
         hasMoreItems: false,
-        lastId: 5,
+        first: 5,
+        after: 5,
     };
 
     beforeAll(async () => {
