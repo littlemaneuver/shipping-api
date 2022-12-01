@@ -1,15 +1,21 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Country } from '../country/country.entity';
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    JoinColumn,
+} from "typeorm";
+import { Country } from "../country/country.entity";
 
 @Entity()
 export class Parcel {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({ unique: true, length: 64 })
+    @Column({ unique: true, length: 8 })
     public sku: string;
 
-    @Column({ type: 'text' })
+    @Column({ type: "text" })
     public description: string;
 
     @Column({ length: 255 })
@@ -19,9 +25,12 @@ export class Parcel {
     public town: string;
 
     @ManyToOne(() => Country, { createForeignKeyConstraints: false })
+    @JoinColumn({ name: "countryId" })
     public country: Country;
 
-    @Column({ type: 'timestamp' })
-    public deliveryDate: string;
+    @Column()
+    public countryId: number;
 
+    @Column({ type: "timestamp" })
+    public deliveryDate: string;
 }

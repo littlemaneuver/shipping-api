@@ -1,26 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Parcel } from './parcel.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { AddParcelDto } from "./parcel.dto";
+import { Parcel } from "./parcel.entity";
 
+type ParcelReturnValue = Omit<Parcel, "country"> & { country: string };
 type GetListReturnValue = {
-    parcels: Parcel[],
+    parcels: ParcelReturnValue[];
     hasMoreItems: boolean;
     lastId: number;
 };
-
 @Injectable()
 export class ParcelService {
     constructor(
         @InjectRepository(Parcel)
-        private readonly parcelsRepository: Repository<Parcel>,
-    ) { }
+        private readonly parcelsRepository: Repository<Parcel>
+    ) {}
 
-    public async getList({ first = 50, after = 0, term, countryName }:
-        { first?: number; after?: number, term?: string, countryName?: string }
-    ): Promise<GetListReturnValue> {
-        const query = this.parcelsRepository.createQueryBuilder('parcel')
-            .select(`
+    public async getList({
+        first = 50,
+        after = 0,
+        term,
+        countryName,
+    }: {
+        first?: number;
+        after?: number;
+        term?: string;
+        countryName?: string;
+    }): Promise<GetListReturnValue> {
+        const query = this.parcelsRepository
+            .createQueryBuilder("parcel")
+            .select(
+                `
                 "parcel"."id" as "id",
                 "parcel"."sku" as "sku",
                 "parcel"."description" as "description",
@@ -28,15 +39,22 @@ export class ParcelService {
                 "parcel"."town" as "town",
                 "parcel"."deliveryDate" as "deliveryDate",
                 "cntr"."name" as "country"
-            `)
-            .where("parcel.id > :after", { after })
+            `
+            )
+            .where("parcel.id >= :after", { after })
             .leftJoin("parcel.country", "cntr")
-            .orderBy(`(case when "cntr"."name" = 'Estonia' then 1 else 2 end)`, "ASC")
+            .orderBy(
+                `(case when "cntr"."name" = 'Estonia' then 1 else 2 end)`,
+                "ASC"
+            )
             .addOrderBy(`"parcel"."deliveryDate"`, "ASC")
             .limit(first + 1);
 
         if (term) {
-            query.andWhere(`to_tsvector("parcel"."description") @@ to_tsquery(:term)`, { term });
+            query.andWhere(
+                `to_tsvector("parcel"."description") @@ to_tsquery(:term)`,
+                { term }
+            );
         }
 
         if (countryName) {
@@ -48,11 +66,11 @@ export class ParcelService {
         return {
             parcels: matchedParcels.slice(0, first),
             hasMoreItems: matchedParcels.length > first,
-            lastId: matchedParcels.at(-1)?.id ?? 0
+            lastId: matchedParcels.at(-1)?.id ?? 0,
         };
     }
 
-    public async add(newParcel: Partial<Parcel>): Promise<Parcel> {
+    public async add(newParcel: AddParcelDto): Promise<Parcel> {
         return this.parcelsRepository.save(newParcel);
     }
 }
