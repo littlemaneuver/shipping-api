@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Shipping API basic implementation",
   "author": "Anton Savchenko",
-  "license": "MIT",
+  "license": "ISC",
   "private": true,
   "engines": {
     "node": ">=18.0.0"
