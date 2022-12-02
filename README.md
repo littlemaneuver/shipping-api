@@ -13,16 +13,16 @@
 
 ### Seed data
 
-In case you want test data to be generated you would need to install node modules locally as well.
+To generate test data you would need to install node modules locally as well. Related code for data generation is in `db-seed.ts` file.
 
-1. make sure that postgres db is running and able to accept connections.
-1. if you use `nvm` you can run `nvm use` and correct node version should be used.
-1. `npm i` to install modules
+1. make sure that postgres db is running and able to accept connections. (otherwise script would fail, but its fine, you could rerun it).
+1. if you use `nvm` you can run `nvm use` and correct node version should be used, otherwise its adviced to use node v18.
+1. `npm i` to install modules.
 1. `npm run migration:seed` will add data.
 
 ### Docs
 
-Basic swagger doc is available at `localhost:5000/docs`
+Basic swagger doc is available at `localhost:5000/docs`.
 
 ### Tests
 
@@ -30,4 +30,5 @@ Basic swagger doc is available at `localhost:5000/docs`
 
 ### N.B.
 
-I had some troubles with stopping api container itself and needed to purge docker data. Hopefully its just my local issue, could not figure it out and didn't want to spend more time on that.
+1. `countries` table should be prefilled with available fo delivery countries. The seed job generates it as well.
+2. I had some troubles with stopping api container itself and needed to purge docker data. Hopefully its just my local issue, could not figure it out and didn't want to spend more time on that.
